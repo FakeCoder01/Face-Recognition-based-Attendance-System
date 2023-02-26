@@ -6,6 +6,7 @@ COPY ./app .
 COPY requirements.txt .
 
 RUN pip install -r requirements.txt
+RUN python ./app/database.py
 
 EXPOSE 3000
 
