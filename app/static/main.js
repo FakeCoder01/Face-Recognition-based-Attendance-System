@@ -108,7 +108,6 @@ captureBtn.addEventListener("click", () => {
                             </div>`
                         } else if (data.status_code === 500) {
                             alert("Something Went Wrong")
-                        } else {
                             window.location.href="";
                         }   
                     })

@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from typing import List
+from typing import List, Union
 import base64
 from io import BytesIO, StringIO
 from datetime import date
@@ -209,7 +209,7 @@ def verify_user(request: Request):
 def user_details(request: Request, id: int):
     try:
         cur = conn.cursor()
-        cur.execute("SELECT name, email, image FROM users WHERE id = %s", (str(id)))
+        cur.execute(f"SELECT name, email, image FROM users WHERE id ={str(id)};")
         row = cur.fetchone()
         if row is not None:
             name, email, img_data = row
@@ -219,12 +219,12 @@ def user_details(request: Request, id: int):
                 "user" : {
                     "name" : name,
                     "email" : email,
-                    "image" : img_str,
+                    "image" : img_str
                 },
                 "user_id" : id
             }
             return templates.TemplateResponse('attendance.html', context)
-        return{
+        return {
             "status_code" : 404,
             "message" : "User id not found",
         }    
@@ -236,7 +236,6 @@ def user_details(request: Request, id: int):
 # Render All user list page
 @app.get('/', response_class=HTMLResponse)
 def home_page(request: Request):
-    cur = conn.cursor()
     # cur.execute("TRUNCATE TABLE users;")
     context = {
         "request" : request
@@ -303,3 +302,67 @@ async def mark_attendance(image_data: str = File(...)):
             "status_code" : 500,
             "message" : "Something went wrong"
         }
+
+
+@app.post("/users/delete/{id}")
+async def delete_user(id: int):
+    try:
+        cur = conn.cursor()
+        cur.execute(f"SELECT id FROM users WHERE id={str(id)};")
+        row = cur.fetchone()
+        if row is not None:
+            cur.execute(f"DELETE FROM users WHERE id={str(id)};")
+            return {
+                "status_code" : 200,
+                "message" : "User has been deleted"
+            }
+        return {
+            "status_code" : 404,
+            "message" : "User id not found",
+        }    
+    except Exception as err:
+        print(err)
+        return {
+            "status_code" : 500,
+            "message" : "Something went wrong"
+        }    
+
+@app.post("/users/update/{id}")
+async def update_user(id: int, name: str = Form(...), email : str= Form(...), image: UploadFile = File(...) ):
+    try:
+        cur = conn.cursor()
+        cur.execute(f"SELECT id FROM users WHERE id ={str(id)};")
+        row = cur.fetchone()
+        if row is not None:
+            img_data = await image.read()
+            nparr = np.frombuffer(img_data, np.uint8)
+            img_np = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            img_str = base64.b64encode(img_data).decode("utf-8")
+            tmp_img = readBase64Images(img_str)
+            if len(face_recognition.face_encodings(tmp_img)) != 1:
+                return {
+                    "status_code" : 402,
+                    "message" : "Photo not valid"
+                }
+            cur.execute("UPDATE users SET name= %s , email= %s , image = %s WHERE id= %s;", (name, email, img_data, str(id), ))
+            return {
+                "status_code" : 200,
+                "message" : "user has been upated",
+                "user" : {
+                    "id" : id,
+                    "name": name, 
+                    "email" : email,
+                    "image": img_str
+                }
+            }
+        return{
+            "status_code" : 404,
+            "message" : "User id not found",
+        }    
+    except Exception as err:
+        print(err)
+        return {
+            "status_code" : 500,
+            "message" : "Something went wrong"
+        }    
+        

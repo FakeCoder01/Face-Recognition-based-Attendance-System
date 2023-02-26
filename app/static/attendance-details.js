@@ -1,7 +1,87 @@
 const ProfileData = document.getElementById('profile_data_area');
 const AttendanceData = document.getElementById('attendance_data_area');
 const userID = document.getElementById("hidden_user_id").value;
+const profile_dlt_btn = document.getElementById("profile_dlt_btn");
 
+
+const form = document.getElementById('form');
+const nameInput = document.getElementById('name');
+const emailInput = document.getElementById('email');
+const imageInput = document.getElementById('image');
+
+form.addEventListener('submit', async (event) => {
+    document.getElementById("loader").style.display = "block";
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("name", nameInput.value);
+    formData.append("email", emailInput.value);
+    formData.append("image", imageInput.files[0]);
+
+    fetch('/users/update/'+userID, {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+            .then(data => {
+            
+            if(data.status_code === 200){
+                emailInput.value = data.user.email;
+                nameInput.value = data.user.name;
+                document.getElementById("IMAGE_SHOW").src = "data:image/png;base64," + data.user.image;
+                document.getElementById("modalArea").innerHTML = `
+                    <div>
+                        <div onclick="this.style.display='none';" class="p-2 bg-green-200 text-green-800 cursor-pointer p-4 text-lg rounded border border-green-700 my-3">
+                            <span class="underline font-semibold text-green-600">Success</span> User has been updated
+                        </div>
+                    </div>
+                `; 
+            }else if(data.status_code === 422){
+                document.getElementById("modalArea").innerHTML = `
+                        <div>
+                            <div onclick="this.style.display='none';" class="p-2 bg-red-200 text-red-800 cursor-pointer p-4 text-lg rounded border border-red-700 my-3">
+                            <span class="underline font-semibold text-red-700">Error</span> Data can not be proccessed
+                            </div>
+                </div>`; 
+            }else if(data.status_code === 402){
+                    document.getElementById("modalArea").innerHTML = `
+                        <div>
+                        
+                            <div onclick="this.style.display='none';" class="p-2 bg-red-200 text-red-800 cursor-pointer p-4 text-lg rounded border border-red-700 my-3">
+                                <span class="underline font-semibold text-red-700">Error</span> ${data.message}
+                            </div>
+                        </div>`; 
+            }else if(data.status_code === 500){
+                alert("Something Went wrong while updting");
+            }else{
+                window.location.href="";
+            }
+            document.getElementById("loader").style.display = "none";
+            form.reset();
+        })
+        .catch(error => {
+            console.error
+        });
+});
+
+profile_dlt_btn.addEventListener('click', async (event) => {
+    fetch('/users/delete/'+userID, {
+        method: 'POST',
+    })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status_code === 200){
+                alert("Success! User has been Deleted");
+                window.location.href = "/";
+            }else{
+                console.log(data);
+                alert("Can not be deleted")
+            }
+        })
+        .catch(error => {
+            console.error
+        });
+});
 
 /*
 
@@ -45,8 +125,8 @@ fetch('/users/?id='+userID)
 fetch('/attendance/?id='+userID)
 .then(response => response.json())
 .then(data => {
+    document.getElementById("loader").style.display = "none";
     if(data.status_code === 200){
-        document.getElementById("loader").style.display = "none";
         for(i=0; i<data.attendance.length; i++){
             const attendance = data.attendance[i];
             AttendanceData.innerHTML += `
@@ -70,3 +150,5 @@ fetch('/attendance/?id='+userID)
 .catch(error => {
     console.error
 });
+
+
