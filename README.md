@@ -9,6 +9,9 @@
 
 <hr>
 
+
+<iframe src="https://drive.google.com/file/d/1e8Cos0qLpwxtTj60qo5sXfTLLZpjxh9E/preview" width="600" height="480"></iframe>
+
 <video>
     <source src="https://drive.google.com/uc?export=download&id=1e8Cos0qLpwxtTj60qo5sXfTLLZpjxh9E" type='video/mp4'>
 </video>
