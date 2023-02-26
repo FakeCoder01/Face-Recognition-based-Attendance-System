@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_USER: fakecoder
+      POSTGRES_PASSWORD: FakeCoder01
+      POSTGRES_DB: fakecoder_postgres
+    ports:
+      - "5432:5432"
+  web:
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 3000
+    environment:
+      DATABASE_URL: postgresql://fakecoder:FakeCoder01@db/fakecoder_postgres
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db

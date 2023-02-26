@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Face Recognition Attendance System</title>
+    <link rel="stylesheet" href="/static/tailwindcss.css">
+</head>
+
+<body>
+    <div class="text-3xl font-semibold mb-4 px-4 space-x-8 py-3 bg-blue-100 rounded">
+        <a href="/" class="">Home</a>
+        <a href="/add-user" class="">Add User</a>
+        <a href="/" class="">See Attendance</a>
+        <a href="/verify" class="float-right bg-green-400 rounded-lg mt-[-8px] px-3 py-2">Mark Attendance</a>
+    </div>
+
+    <div class="flex flex-col items-center justify-center h-screen">
+        <button id="capture-btn" class="px-4 py-2 bg-blue-500 text-white rounded">Capture Image</button>
+        <p class="text-xs text-blue-500 font-semibold mt-1">( Picture will be automatically taken after 2 seconds )</p>
+    </div>
+
+    <div id="capture-modal" class="fixed inset-0 z-10 hidden">
+        <div class="flex items-center justify-center h-screen">
+            <div class="relative">
+                <video id="video-feed" class="w-full h-auto" autoplay></video>
+                <canvas id="capture-canvas" class="absolute top-0 left-0"></canvas>
+            </div>
+            <div class="flex bg-green-600 px-2 py-1 m-1 rounded-lg items-center justify-center" style="text-align: center; display: none;" id="loader">
+                <div
+                  class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                  role="status">
+                  <span
+                    class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
+                    >Loading...</span
+                  >
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modalArea"></div>
+
+    <script src="/static/main.js"></script>
+</body>
+
+</html>

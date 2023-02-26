@@ -1,0 +1,11 @@
+uvicorn
+fastapi
+cmake
+typing
+psycopg2-binary
+face-recognition
+numpy
+Pillow
+jinja2
+python-multipart
+opencv-python

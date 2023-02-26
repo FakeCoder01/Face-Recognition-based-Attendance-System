@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>User Attendances</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="stylesheet" href="/static/tailwindcss.css">
+</head>
+<body class="">
+    <div class="text-3xl font-semibold mb-4 px-4 space-x-8 py-3 bg-blue-100 rounded">
+        <a href="/" class="">Home</a>
+        <a href="/add-user" class="">Add User</a>
+        <a href="/" class="">See Attendance</a>
+        <a href="/verify" class="float-right bg-green-400 rounded-lg mt-[-8px] px-3 py-2">Mark Attendance</a>
+    </div>
+    <div class="container mx-auto p-4">
+        <div>
+            <div class="flex items-center justify-center" id="loader">
+                <div
+                  class="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+                  role="status">
+                  <span
+                    class="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
+                    >Loading...</span
+                  >
+                </div>
+            </div>
+            <section style="top: 10px; margin-top: 70px;position: fixed;" id="profile_data_area"
+            class=" w-64 mx-auto bg-gray-400 rounded-2xl px-8 py-6 shadow-lg">
+    
+                <div class="mt-6 w-fit mx-auto">
+                    <img src="data:image/png;base64,{{user.image}}" alt="IMAGE">
+                </div>
+
+                <div class="mt-8 ">
+                    <h2 class="text-white font-bold text-2xl tracking-wide">{{user.name}}</h2>
+                </div>
+                <p class="text-slate-900 font-semibold mt-2.5" >
+                    {{user.email}}
+                </p>
+            </section>
+            <div class=" w-full max-w-2xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+                <header class="px-5 py-4 border-b border-gray-100">
+                    <h2 class="font-semibold text-gray-800">Attendance Details of <b> UserID : {{user_id}}</b></h2>
+                </header>
+                <div class="p-3">
+                    
+                    <div class="overflow-x-auto">
+                        <div id=""></div>
+                        <table class="table-auto w-full text-center">
+                            <thead class="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                                <tr>
+                                    <th class="p-2 whitespace-nowrap">
+                                        <div class="font-semibold text-left">Date</div>
+                                    </th>
+                                    <th class="p-2 whitespace-nowrap">
+                                        <div class="font-semibold text-left">Status</div>
+                                    </th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody id="attendance_data_area" class="text-sm divide-y divide-gray-100">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>  
+        <input type="hidden" name="hidden_user_id" id="hidden_user_id" value="{{user_id}}" required>
+    </div>
+    <script src="/static/attendance_details.js"></script>    
+</body>
+</html>
